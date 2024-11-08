@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Code') {
+            steps {
+                // Checkout the code from GitHub
+                git 'https://github.com/AvinashSaladi/Docker.git'
+            }
+        }
+        
+        stage('Run the Dockerfile to create image') {
+            steps {
+                // Build the Docker image from the Dockerfile
+                sh 'docker build -t practice .'
+            }
+        }
+        
+        stage('Create the container') {
+            steps {
+                // Create and start the Docker container from the built image
+                sh 'docker run -d --name demo -p 1836:80 practice'
+            }
+        }
+        
+        stage('Run commands inside the container') {
+            steps {
+                // Execute a command inside the running container
+                sh 'docker exec -it demo bash -c "echo Hello from inside the container"'
+            }
+        }
+    }
+}
